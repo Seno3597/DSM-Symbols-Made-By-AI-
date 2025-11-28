@@ -318,7 +318,14 @@
             display: none;
         }
 
-        .admin-mode .btn-delete {
+        .btn-edit {
+            background: #ffaa00;
+            color: #0a0a0a;
+            display: none;
+        }
+
+        .admin-mode .btn-delete,
+        .admin-mode .btn-edit {
             display: block;
         }
 
@@ -341,6 +348,121 @@
 
         .empty-state-text {
             font-size: 1.3em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            color: #00ff88;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: #e0e0e0;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            color: #0a0a0a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .error-message {
@@ -434,6 +556,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- Edit Modal -->
+        <div class="modal" id="editModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Symbol File</h3>
+                    <button class="modal-close" onclick="closeEditModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label for="editSymbolName">Symbol Name</label>
+                        <input type="text" id="editSymbolName" placeholder="Enter symbol name">
+                    </div>
+                    <div class="input-group">
+                        <label>Current File</label>
+                        <div class="symbol-info" id="editCurrentFile"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="editFileInput">Replace File (optional)</label>
+                        <div class="upload-area" id="editUploadArea" style="padding: 20px;">
+                            <div class="upload-text" style="font-size: 1em;">Click to select new file</div>
+                            <input type="file" id="editFileInput" accept=".so,.dll,.json,.txt">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -441,6 +594,53 @@
         let isAdmin = false;
         let selectedFile = null;
         let symbols = {};
+        let editingSymbolId = null;
+        let editingNewFile = null;
+
+        // Load symbols from persistent storage on page load
+        async function loadSymbolsFromStorage() {
+            try {
+                const keys = await window.storage.list('symbol:', true);
+                if (keys && keys.keys) {
+                    for (const key of keys.keys) {
+                        try {
+                            const result = await window.storage.get(key, true);
+                            if (result && result.value) {
+                                const id = key.replace('symbol:', '');
+                                symbols[id] = JSON.parse(result.value);
+                            }
+                        } catch (e) {
+                            console.log('No data for key:', key);
+                        }
+                    }
+                    renderSymbols();
+                }
+            } catch (error) {
+                console.log('Loading symbols from storage');
+            }
+        }
+
+        // Save symbol to persistent storage
+        async function saveSymbolToStorage(id, symbolData) {
+            try {
+                await window.storage.set(`symbol:${id}`, JSON.stringify(symbolData), true);
+                return true;
+            } catch (error) {
+                console.error('Error saving symbol:', error);
+                return false;
+            }
+        }
+
+        // Delete symbol from persistent storage
+        async function deleteSymbolFromStorage(id) {
+            try {
+                await window.storage.delete(`symbol:${id}`, true);
+                return true;
+            } catch (error) {
+                console.error('Error deleting symbol:', error);
+                return false;
+            }
+        }
 
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -451,6 +651,11 @@
         const adminSection = document.getElementById('adminSection');
         const uploadSection = document.getElementById('uploadSection');
         const errorMessage = document.getElementById('errorMessage');
+        const editModal = document.getElementById('editModal');
+        const editSymbolName = document.getElementById('editSymbolName');
+        const editFileInput = document.getElementById('editFileInput');
+        const editUploadArea = document.getElementById('editUploadArea');
+        const editCurrentFile = document.getElementById('editCurrentFile');
 
         function checkPassword() {
             const password = passwordInput.value;
@@ -470,10 +675,18 @@
             if (e.key === 'Enter') checkPassword();
         });
 
-        function loadSymbols() {
-            if (Object.keys(symbols).length > 0) {
-                renderSymbols();
+        // Edit modal file handling
+        editUploadArea.addEventListener('click', () => editFileInput.click());
+
+        editFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                editingNewFile = e.target.files[0];
+                editUploadArea.querySelector('.upload-text').textContent = `Selected: ${editingNewFile.name}`;
             }
+        });
+
+        function loadSymbols() {
+            loadSymbolsFromStorage();
         }
 
         uploadArea.addEventListener('click', () => fileInput.click());
@@ -521,7 +734,8 @@
             const name = symbolName.value.trim();
             const reader = new FileReader();
 
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
+                const id = Date.now().toString();
                 const symbolData = {
                     name: name,
                     fileName: selectedFile.name,
@@ -530,15 +744,22 @@
                     data: e.target.result
                 };
 
-                symbols[Date.now()] = symbolData;
-                renderSymbols();
+                // Save to persistent storage (shared with all users)
+                const saved = await saveSymbolToStorage(id, symbolData);
+                
+                if (saved) {
+                    symbols[id] = symbolData;
+                    renderSymbols();
 
-                selectedFile = null;
-                symbolName.value = '';
-                fileInput.value = '';
-                uploadArea.querySelector('.upload-text').textContent = 'Drop your IL2CPP symbol file here';
-                uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
-                uploadBtn.disabled = true;
+                    selectedFile = null;
+                    symbolName.value = '';
+                    fileInput.value = '';
+                    uploadArea.querySelector('.upload-text').textContent = 'Drop your IL2CPP symbol file here';
+                    uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
+                    uploadBtn.disabled = true;
+                } else {
+                    alert('Error uploading symbol file. Please try again.');
+                }
             };
 
             reader.readAsDataURL(selectedFile);
@@ -570,6 +791,7 @@
                         <div class="symbol-date">Uploaded: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
                         <div class="symbol-actions">
                             <button class="btn-small btn-download" onclick="downloadSymbol('${id}')">Download</button>
+                            <button class="btn-small btn-edit" onclick="editSymbol('${id}')">Edit</button>
                             <button class="btn-small btn-delete" onclick="deleteSymbol('${id}')">Delete</button>
                         </div>
                     </div>
@@ -593,13 +815,97 @@
             link.click();
         };
 
-        window.deleteSymbol = (id) => {
+        window.deleteSymbol = async (id) => {
             if (!isAdmin) return;
             if (confirm('Are you sure you want to delete this symbol file?')) {
-                delete symbols[id];
-                renderSymbols();
+                const deleted = await deleteSymbolFromStorage(id);
+                if (deleted) {
+                    delete symbols[id];
+                    renderSymbols();
+                } else {
+                    alert('Error deleting symbol file. Please try again.');
+                }
             }
         };
+
+        window.editSymbol = (id) => {
+            if (!isAdmin) return;
+            const symbol = symbols[id];
+            editingSymbolId = id;
+            editingNewFile = null;
+            
+            editSymbolName.value = symbol.name;
+            editCurrentFile.textContent = `${symbol.fileName} (${formatFileSize(symbol.size)})`;
+            editUploadArea.querySelector('.upload-text').textContent = 'Click to select new file';
+            editFileInput.value = '';
+            
+            editModal.classList.add('active');
+        };
+
+        window.closeEditModal = () => {
+            editModal.classList.remove('active');
+            editingSymbolId = null;
+            editingNewFile = null;
+        };
+
+        window.saveEdit = async () => {
+            if (!editingSymbolId) return;
+            
+            const symbol = symbols[editingSymbolId];
+            const newName = editSymbolName.value.trim();
+            
+            if (!newName) {
+                alert('Please enter a symbol name');
+                return;
+            }
+
+            if (editingNewFile) {
+                // If new file is selected, read it
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const updatedSymbol = {
+                        ...symbol,
+                        name: newName,
+                        fileName: editingNewFile.name,
+                        size: editingNewFile.size,
+                        data: e.target.result,
+                        date: new Date().toISOString()
+                    };
+
+                    const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
+                    if (saved) {
+                        symbols[editingSymbolId] = updatedSymbol;
+                        renderSymbols();
+                        closeEditModal();
+                    } else {
+                        alert('Error updating symbol file. Please try again.');
+                    }
+                };
+                reader.readAsDataURL(editingNewFile);
+            } else {
+                // Just update the name
+                const updatedSymbol = {
+                    ...symbol,
+                    name: newName
+                };
+
+                const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
+                if (saved) {
+                    symbols[editingSymbolId] = updatedSymbol;
+                    renderSymbols();
+                    closeEditModal();
+                } else {
+                    alert('Error updating symbol file. Please try again.');
+                }
+            }
+        };
+
+        // Close modal when clicking outside
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+        });
 
         loadSymbols();
     </script>
