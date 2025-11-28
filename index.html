@@ -171,6 +171,13 @@
             font-size: 0.9em;
         }
 
+        .file-size-warning {
+            color: #ffaa00;
+            font-size: 0.85em;
+            margin-top: 10px;
+            text-align: center;
+        }
+
         input[type="file"] {
             display: none;
         }
@@ -512,7 +519,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌍 Symbol World</h1>
+            <h1>DSModding Symbols</h1>
             <p>IL2CPP Symbol File Repository</p>
         </div>
 
@@ -536,6 +543,7 @@
                 <div class="upload-icon">📁</div>
                 <div class="upload-text">Drop your IL2CPP symbol file here</div>
                 <div class="upload-subtext">or click to browse</div>
+                <div class="file-size-warning">⚠️ Maximum file size: 5MB</div>
                 <input type="file" id="fileInput" accept=".so,.dll,.json,.txt">
             </div>
 
@@ -731,6 +739,16 @@
         uploadBtn.addEventListener('click', async () => {
             if (!selectedFile || !symbolName.value.trim()) return;
 
+            // Check file size (5MB limit per file due to storage constraints)
+            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+            if (selectedFile.size > MAX_FILE_SIZE) {
+                alert(`File is too large (${formatFileSize(selectedFile.size)}). Maximum size is 5MB. Please upload a smaller file.`);
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+
             const name = symbolName.value.trim();
             const reader = new FileReader();
 
@@ -744,22 +762,37 @@
                     data: e.target.result
                 };
 
-                // Save to persistent storage (shared with all users)
-                const saved = await saveSymbolToStorage(id, symbolData);
-                
-                if (saved) {
-                    symbols[id] = symbolData;
-                    renderSymbols();
+                try {
+                    // Save to persistent storage (shared with all users)
+                    const saved = await saveSymbolToStorage(id, symbolData);
+                    
+                    if (saved) {
+                        symbols[id] = symbolData;
+                        renderSymbols();
 
-                    selectedFile = null;
-                    symbolName.value = '';
-                    fileInput.value = '';
-                    uploadArea.querySelector('.upload-text').textContent = 'Drop your IL2CPP symbol file here';
-                    uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
-                    uploadBtn.disabled = true;
-                } else {
-                    alert('Error uploading symbol file. Please try again.');
+                        selectedFile = null;
+                        symbolName.value = '';
+                        fileInput.value = '';
+                        uploadArea.querySelector('.upload-text').textContent = 'Drop your IL2CPP symbol file here';
+                        uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
+                        uploadBtn.textContent = 'Upload Symbol File';
+                        
+                        alert('Symbol file uploaded successfully!');
+                    } else {
+                        throw new Error('Storage operation failed');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('Error uploading symbol file. The file might be too large or there may be a storage issue. Please try again with a smaller file.');
+                    uploadBtn.textContent = 'Upload Symbol File';
+                    uploadBtn.disabled = false;
                 }
+            };
+
+            reader.onerror = () => {
+                alert('Error reading file. Please try again.');
+                uploadBtn.textContent = 'Upload Symbol File';
+                uploadBtn.disabled = false;
             };
 
             reader.readAsDataURL(selectedFile);
@@ -860,6 +893,13 @@
             }
 
             if (editingNewFile) {
+                // Check file size
+                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                if (editingNewFile.size > MAX_FILE_SIZE) {
+                    alert(`File is too large (${formatFileSize(editingNewFile.size)}). Maximum size is 5MB.`);
+                    return;
+                }
+
                 // If new file is selected, read it
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -872,13 +912,17 @@
                         date: new Date().toISOString()
                     };
 
-                    const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
-                    if (saved) {
-                        symbols[editingSymbolId] = updatedSymbol;
-                        renderSymbols();
-                        closeEditModal();
-                    } else {
-                        alert('Error updating symbol file. Please try again.');
+                    try {
+                        const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
+                        if (saved) {
+                            symbols[editingSymbolId] = updatedSymbol;
+                            renderSymbols();
+                            closeEditModal();
+                        } else {
+                            throw new Error('Storage failed');
+                        }
+                    } catch (error) {
+                        alert('Error updating symbol file. The file might be too large. Please try again.');
                     }
                 };
                 reader.readAsDataURL(editingNewFile);
@@ -889,12 +933,16 @@
                     name: newName
                 };
 
-                const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
-                if (saved) {
-                    symbols[editingSymbolId] = updatedSymbol;
-                    renderSymbols();
-                    closeEditModal();
-                } else {
+                try {
+                    const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
+                    if (saved) {
+                        symbols[editingSymbolId] = updatedSymbol;
+                        renderSymbols();
+                        closeEditModal();
+                    } else {
+                        throw new Error('Storage failed');
+                    }
+                } catch (error) {
                     alert('Error updating symbol file. Please try again.');
                 }
             }
