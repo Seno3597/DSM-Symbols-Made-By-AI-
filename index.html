@@ -6,7 +6,7 @@
   <title>DSModding Symbols</title>
 
   <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/client.min.js"></script>
 
   <style>
     :root{
@@ -238,8 +238,15 @@ function formatSize(b){ if(!b) return '0 Bytes'; if(b<1024) return b+' B'; if(b<
 // wait for DOM
 window.addEventListener('DOMContentLoaded', async ()=>{
   // create supabase client
-  try { const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
- } catch(e){ console.error('supabase init err', e) }
+  try {
+      // create a stateless Supabase client using the global window.supabase provided by the CDN
+      // disable session persistence to avoid IndexedDB writes (prevents FILE_ERROR_NO_SPACE)
+      const clientInit = window.supabase && window.client.createClient;
+      if (!clientInit) throw new Error('Supabase library not available');
+      client = window.client.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: false }
+      });
+    } catch (e) { console.error('supabase init err', e); alert('Supabase failed to initialize — check console.'); return; }
 
   // wire up elements
   const unlockBtn = $('unlockBtn');
@@ -291,11 +298,11 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     uploadBtn.disabled = true; uploadBtn.textContent = 'Uploading…'
     try{
       const path = `${Date.now()}_${sanitizeFileName(selectedFile.name)}`;
-      const { data: up, error: upErr } = await supabase.storage.from('symbols').upload(path, selectedFile, { cacheControl: '3600', contentType: 'application/json' });
+      const { data: up, error: upErr } = await client.storage.from('symbols').upload(path, selectedFile, { cacheControl: '3600', contentType: 'application/json' });
       if(upErr) throw upErr;
-      const { data: ins, error: insErr } = await supabase.from('symbols').insert([{ name: symbolName.value.trim(), filename: selectedFile.name, size: selectedFile.size, storage_path: path }]).select().single();
+      const { data: ins, error: insErr } = await client.from('symbols').insert([{ name: symbolName.value.trim(), filename: selectedFile.name, size: selectedFile.size, storage_path: path }]).select().single();
       if(insErr) {
-        await supabase.storage.from('symbols').remove([path]).catch(()=>{});
+        await client.storage.from('symbols').remove([path]).catch(()=>{});
         throw insErr;
       }
       selectedFile = null; symbolName.value = ''; fileInput.value = ''; uploadArea.querySelector('.upload-text').textContent='Drop your .json symbol file here'; uploadArea.querySelector('.upload-sub').textContent='or click to browse';
@@ -325,7 +332,7 @@ async function loadSymbols(){
   const grid = $('symbolsGrid');
   grid.innerHTML = `<div class="card"><div style="font-weight:800;color:var(--muted)">Loading…</div></div>`;
   try{
-    const { data, error } = await supabase.from('symbols').select('*').order('created_at',{ascending:false});
+    const { data, error } = await client.from('symbols').select('*').order('created_at',{ascending:false});
     if(error) throw error;
     if(!data || data.length===0){ grid.innerHTML = `<div class="card"><div style="font-weight:800;color:var(--muted)">No symbol files</div></div>`; symbolsCache = {}; return }
 
@@ -361,7 +368,7 @@ function renderCard(row){
 /* ====== download ====== */
 async function downloadSymbol(id){
   const row = symbolsCache[id]; if(!row) return alert('Missing');
-  const { data: urlData, error } = supabase.storage.from('symbols').getPublicUrl(row.storage_path);
+  const { data: urlData, error } = client.storage.from('symbols').getPublicUrl(row.storage_path);
   if(error) { console.error(error); return alert('URL error') }
   const url = urlData?.publicUrl || urlData?.public_url || '';
   if(!url) return alert('No URL');
@@ -374,8 +381,8 @@ async function deleteSymbol(id){
   if(!confirm('Delete permanently?')) return;
   try{
     const row = symbolsCache[id]; if(!row) throw new Error('Missing');
-    await supabase.storage.from('symbols').remove([row.storage_path]);
-    await supabase.from('symbols').delete().eq('id', id);
+    await client.storage.from('symbols').remove([row.storage_path]);
+    await client.from('symbols').delete().eq('id', id);
     document.getElementById('card-'+id)?.remove(); delete symbolsCache[id];
   }catch(e){ console.error(e); alert('Delete failed') }
 }
@@ -397,12 +404,12 @@ async function saveEdit(){
     let storagePath = row.storage_path; let filename = row.filename; let size = row.size;
     if(editingNewFile){
       const newPath = `${Date.now()}_${sanitizeFileName(editingNewFile.name)}`;
-      const { error: upErr } = await supabase.storage.from('symbols').upload(newPath, editingNewFile, { contentType:'application/json' });
+      const { error: upErr } = await client.storage.from('symbols').upload(newPath, editingNewFile, { contentType:'application/json' });
       if(upErr) throw upErr;
-      await supabase.storage.from('symbols').remove([row.storage_path]).catch(()=>{});
+      await client.storage.from('symbols').remove([row.storage_path]).catch(()=>{});
       storagePath = newPath; filename = editingNewFile.name; size = editingNewFile.size;
     }
-    const { error } = await supabase.from('symbols').update({ name:newName, filename, size, storage_path: storagePath }).eq('id', editingId);
+    const { error } = await client.from('symbols').update({ name:newName, filename, size, storage_path: storagePath }).eq('id', editingId);
     if(error) throw error;
     await loadSymbols(); closeEditModal(); alert('Updated');
   }catch(e){ console.error(e); alert('Update failed') }
