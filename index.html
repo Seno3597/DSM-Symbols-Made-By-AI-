@@ -1,962 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSModding Symbols</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.6s ease;
-        }
-
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #00ff88, #00ccff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.2em;
-            color: #888;
-        }
-
-        .admin-section {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .admin-lock {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #252525;
-            border-radius: 10px;
-        }
-
-        .admin-lock-icon {
-            font-size: 2em;
-        }
-
-        .admin-lock-text {
-            flex: 1;
-        }
-
-        .admin-lock-title {
-            font-size: 1.2em;
-            color: #00ff88;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .admin-lock-desc {
-            color: #888;
-            font-size: 0.9em;
-        }
-
-        .password-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .password-group input {
-            flex: 1;
-            padding: 12px 15px;
-            background: #252525;
-            border: 1px solid #333;
-            border-radius: 10px;
-            color: #e0e0e0;
-            font-size: 1em;
-        }
-
-        .password-group input:focus {
-            outline: none;
-            border-color: #00ff88;
-        }
-
-        .password-group button {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #00ff88, #00ccff);
-            border: none;
-            border-radius: 10px;
-            color: #0a0a0a;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .password-group button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
-        }
-
-        .upload-section {
-            display: none;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .upload-section.active {
-            display: block;
-        }
-
-        .upload-area {
-            border: 2px dashed #333;
-            border-radius: 10px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: #252525;
-        }
-
-        .upload-area:hover {
-            border-color: #00ff88;
-            background: #2a2a2a;
-        }
-
-        .upload-area.dragover {
-            border-color: #00ccff;
-            background: #2f2f2f;
-        }
-
-        .upload-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .upload-text {
-            font-size: 1.2em;
-            color: #00ff88;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .upload-subtext {
-            color: #888;
-            font-size: 0.9em;
-        }
-
-        .file-size-warning {
-            color: #ffaa00;
-            font-size: 0.85em;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .input-group {
-            margin-top: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #00ff88;
-            font-weight: 600;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #252525;
-            border: 1px solid #333;
-            border-radius: 10px;
-            color: #e0e0e0;
-            font-size: 1em;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #00ff88;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #00ff88, #00ccff);
-            color: #0a0a0a;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .symbols-section {
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .section-title {
-            color: #e0e0e0;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .symbols-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .symbol-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            animation: scaleIn 0.4s ease;
-        }
-
-        .symbol-card:hover {
-            transform: translateY(-5px);
-            border-color: #00ff88;
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
-        }
-
-        .symbol-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .symbol-name {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #00ff88;
-        }
-
-        .symbol-date {
-            font-size: 0.85em;
-            color: #666;
-        }
-
-        .symbol-info {
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        .symbol-size {
-            display: inline-block;
-            background: #252525;
-            color: #00ccff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .symbol-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-small {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-download {
-            background: linear-gradient(135deg, #00ff88, #00ccff);
-            color: #0a0a0a;
-        }
-
-        .btn-delete {
-            background: #ff4444;
-            color: white;
-            display: none;
-        }
-
-        .btn-edit {
-            background: #ffaa00;
-            color: #0a0a0a;
-            display: none;
-        }
-
-        .admin-mode .btn-delete,
-        .admin-mode .btn-edit {
-            display: block;
-        }
-
-        .btn-small:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-state-icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state-text {
-            font-size: 1.3em;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            animation: slideUp 0.3s ease;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 1.5em;
-            color: #00ff88;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 1.5em;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            color: #fff;
-        }
-
-        .modal-body {
-            margin-bottom: 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .btn-secondary {
-            background: #333;
-            color: #e0e0e0;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: #444;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00ff88, #00ccff);
-            color: #0a0a0a;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .error-message {
-            background: #ff444420;
-            border: 1px solid #ff4444;
-            color: #ff6666;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DSModding Symbols</title>
+
+  <!-- Supabase JS (v2 compatible build) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    :root{
+      --purple:#a64bff;
+      --purple-dark:#6a20c7;
+      --lime:#8aff00;
+      --magenta:#ff2dcf;
+      --cyan:#17e8ff;
+      --bg-dark:#0b0b0b;
+      --bg-card:#161616;
+      --bg-panel:#1e1e1e;
+      --text-light:#e8e8e8;
+      --text-muted:#999;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg-dark);color:var(--text-light);font-family:Segoe UI,Arial;min-height:100vh;padding:20px}
+    .container{max-width:1200px;margin:0 auto}
+    .header{text-align:center;margin-bottom:30px}
+    .header h1{font-size:2.6rem;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--magenta));-webkit-background-clip:text;color:transparent}
+    .header p{color:var(--text-muted);margin-top:6px}
+
+    .admin-section{background:var(--bg-panel);border:1px solid var(--purple);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 0 12px #a64bff33}
+    .admin-lock{display:flex;gap:12px;align-items:center}
+    .admin-lock-icon{font-size:1.6rem}
+    .admin-lock-title{color:var(--lime);font-weight:700}
+    .password-group{display:flex;gap:10px;margin-top:12px}
+    .password-group input{flex:1;padding:10px;border-radius:8px;background:#121212;border:1px solid var(--purple);color:var(--text-light)}
+    .password-group button{padding:10px 18px;border-radius:8px;border:0;background:linear-gradient(135deg,var(--lime),var(--cyan));font-weight:700;cursor:pointer}
+
+    .upload-section{background:var(--bg-panel);border:1px solid var(--purple);border-radius:12px;padding:18px;margin-bottom:18px;display:none;box-shadow:0 0 12px #a64bff33}
+    .upload-section.active{display:block}
+    .upload-area{padding:30px;border-radius:12px;border:2px dashed var(--magenta);background:#141414;text-align:center;cursor:pointer;transition:all .15s}
+    .upload-area:hover{border-color:var(--cyan);background:#1b1b1b}
+    .upload-area.dragover{border-color:var(--lime);background:#222}
+    .upload-text{color:var(--lime);font-weight:700;margin-bottom:6px}
+    .upload-subtext{color:var(--text-muted);font-size:.95rem}
+
+    .input-group{margin-top:14px}
+    .input-group label{display:block;color:var(--magenta);font-weight:700;margin-bottom:6px}
+    .input-group input[type="text"]{width:100%;padding:10px;border-radius:8px;background:#141414;border:1px solid var(--purple);color:var(--text-light)}
+
+    .btn{margin-top:12px;padding:12px 22px;border-radius:10px;border:0;background:linear-gradient(135deg,var(--purple),var(--cyan));font-weight:800;cursor:pointer;color:#030303}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    .symbols-section{margin-top:10px}
+    .section-title{font-size:1.6rem;margin-bottom:12px}
+    .symbols-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .symbol-card{background:var(--bg-card);border-radius:12px;padding:14px;border:1px solid var(--purple-dark);box-shadow:0 0 10px #6a20c720;transition:all .15s}
+    .symbol-card:hover{transform:translateY(-6px);border-color:var(--magenta);box-shadow:0 0 18px #ff2dcf44}
+    .symbol-header{display:flex;justify-content:space-between;align-items:center}
+    .symbol-name{font-size:1.05rem;color:var(--cyan);font-weight:800}
+    .symbol-info{color:var(--text-muted);margin-top:8px}
+    .symbol-size{display:inline-block;background:#222;padding:6px 10px;border-radius:20px;color:var(--lime);font-weight:700;margin-top:8px}
+    .symbol-actions{display:flex;gap:8px;margin-top:12px}
+    .btn-small{flex:1;padding:8px;border-radius:8px;border:0;font-weight:800;cursor:pointer}
+    .btn-download{background:linear-gradient(135deg,var(--cyan),var(--lime));color:#040404}
+    .btn-edit{background:var(--magenta);color:#020202}
+    .btn-delete{background:#ff3e3e;color:#fff}
+
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:1000}
+    .modal.active{display:flex}
+    .modal-content{background:var(--bg-card);border-radius:12px;padding:18px;border:1px solid var(--purple);width:min(560px,96%);box-shadow:0 0 18px #a64bff33}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .modal-title{color:var(--magenta);font-weight:800}
+    .modal-close{background:none;border:0;color:var(--text-muted);font-size:1.25rem;cursor:pointer}
+    .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+
+    .empty-state{text-align:center;padding:30px;color:var(--text-muted)}
+    .error-message{background:#ff444420;border:1px solid #ff4444;color:#ff7b7b;padding:8px;border-radius:8px;margin-top:8px}
+
+    @media (max-width:600px){ .symbol-name{font-size:1rem} .header h1{font-size:1.6rem} }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>DSModding Symbols</h1>
-            <p>Il2CPP Symbols</p>
-        </div>
-
-        <div class="admin-section" id="adminSection">
-            <div class="admin-lock">
-                <div class="admin-lock-icon">🔒</div>
-                <div class="admin-lock-text">
-                    <div class="admin-lock-title">Admin Access Required</div>
-                    <div class="admin-lock-desc">Enter password to upload new symbol files</div>
-                </div>
-            </div>
-            <div class="password-group">
-                <input type="password" id="passwordInput" placeholder="Enter admin password">
-                <button onclick="checkPassword()">Unlock</button>
-            </div>
-            <div id="errorMessage"></div>
-        </div>
-
-        <div class="upload-section" id="uploadSection">
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📁</div>
-                <div class="upload-text">Drop your IL2CPP symbol file here</div>
-                <div class="upload-subtext">or click to browse</div>
-                <div class="file-size-warning">⚠️ Maximum file size: 5MB</div>
-                <input type="file" id="fileInput" accept=".so,.dll,.json,.txt">
-            </div>
-
-            <div class="input-group">
-                <label for="symbolName">Symbol Name</label>
-                <input type="text" id="symbolName" placeholder="Enter a name for this symbol file">
-            </div>
-
-            <button class="btn" id="uploadBtn" disabled>Upload Symbol File</button>
-        </div>
-
-        <div class="symbols-section">
-            <h2 class="section-title">Available Symbol Files</h2>
-            <div class="symbols-grid" id="symbolsGrid">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📦</div>
-                    <div class="empty-state-text">No symbol files available</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Edit Modal -->
-        <div class="modal" id="editModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Edit Symbol File</h3>
-                    <button class="modal-close" onclick="closeEditModal()">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group">
-                        <label for="editSymbolName">Symbol Name</label>
-                        <input type="text" id="editSymbolName" placeholder="Enter symbol name">
-                    </div>
-                    <div class="input-group">
-                        <label>Current File</label>
-                        <div class="symbol-info" id="editCurrentFile"></div>
-                    </div>
-                    <div class="input-group">
-                        <label for="editFileInput">Replace File (optional)</label>
-                        <div class="upload-area" id="editUploadArea" style="padding: 20px;">
-                            <div class="upload-text" style="font-size: 1em;">Click to select new file</div>
-                            <input type="file" id="editFileInput" accept=".so,.dll,.json,.txt">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>DSModding Symbols</h1>
+      <p>IL2CPP Symbol File Repository — shared via Supabase</p>
     </div>
 
-    <script>
-        const ADMIN_PASSWORD = "SenoCoolioSeno"; // Change this password
-        let isAdmin = false;
-        let selectedFile = null;
-        let symbols = {};
-        let editingSymbolId = null;
-        let editingNewFile = null;
+    <!-- Admin login -->
+    <div class="admin-section" id="adminSection">
+      <div class="admin-lock">
+        <div class="admin-lock-icon">🔒</div>
+        <div>
+          <div class="admin-lock-title">Admin Access Required</div>
+          <div class="admin-lock-desc">Enter password to manage symbol uploads (admins only)</div>
+        </div>
+      </div>
 
-        // Load symbols from persistent storage on page load
-        async function loadSymbolsFromStorage() {
-            try {
-                const keys = await window.storage.list('symbol:', true);
-                if (keys && keys.keys) {
-                    for (const key of keys.keys) {
-                        try {
-                            const result = await window.storage.get(key, true);
-                            if (result && result.value) {
-                                const id = key.replace('symbol:', '');
-                                symbols[id] = JSON.parse(result.value);
-                            }
-                        } catch (e) {
-                            console.log('No data for key:', key);
-                        }
-                    }
-                    renderSymbols();
-                }
-            } catch (error) {
-                console.log('Loading symbols from storage');
-            }
-        }
+      <div class="password-group">
+        <input id="passwordInput" type="password" placeholder="Enter admin password" />
+        <button id="unlockBtn">Unlock</button>
+      </div>
 
-        // Save symbol to persistent storage
-        async function saveSymbolToStorage(id, symbolData) {
-            try {
-                await window.storage.set(`symbol:${id}`, JSON.stringify(symbolData), true);
-                return true;
-            } catch (error) {
-                console.error('Error saving symbol:', error);
-                return false;
-            }
-        }
+      <div id="errorMessage"></div>
+    </div>
 
-        // Delete symbol from persistent storage
-        async function deleteSymbolFromStorage(id) {
-            try {
-                await window.storage.delete(`symbol:${id}`, true);
-                return true;
-            } catch (error) {
-                console.error('Error deleting symbol:', error);
-                return false;
-            }
-        }
+    <!-- Upload / manage -->
+    <div class="upload-section" id="uploadSection">
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text">Drop your JSON symbol file here</div>
+        <div class="upload-subtext">or click to browse — only <strong>.json</strong> allowed</div>
+        <input id="fileInput" type="file" accept=".json" style="display:none" />
+      </div>
 
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const symbolName = document.getElementById('symbolName');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const symbolsGrid = document.getElementById('symbolsGrid');
-        const passwordInput = document.getElementById('passwordInput');
-        const adminSection = document.getElementById('adminSection');
-        const uploadSection = document.getElementById('uploadSection');
-        const errorMessage = document.getElementById('errorMessage');
-        const editModal = document.getElementById('editModal');
-        const editSymbolName = document.getElementById('editSymbolName');
-        const editFileInput = document.getElementById('editFileInput');
-        const editUploadArea = document.getElementById('editUploadArea');
-        const editCurrentFile = document.getElementById('editCurrentFile');
+      <div class="input-group">
+        <label for="symbolName">Symbol Name</label>
+        <input id="symbolName" type="text" placeholder="Enter a name for this symbol file" />
+      </div>
 
-        function checkPassword() {
-            const password = passwordInput.value;
-            if (password === ADMIN_PASSWORD) {
-                isAdmin = true;
-                adminSection.style.display = 'none';
-                uploadSection.classList.add('active');
-                document.body.classList.add('admin-mode');
-                errorMessage.innerHTML = '';
-            } else {
-                errorMessage.innerHTML = '<div class="error-message">❌ Incorrect password</div>';
-                passwordInput.value = '';
-            }
-        }
+      <button id="uploadBtn" class="btn" disabled>Upload Symbol File (JSON)</button>
+    </div>
 
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkPassword();
-        });
+    <!-- Symbols list -->
+    <div class="symbols-section">
+      <h2 class="section-title">Available Symbol Files</h2>
+      <div class="symbols-grid" id="symbolsGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">📦</div>
+          <div class="empty-state-text">No symbol files available</div>
+        </div>
+      </div>
+    </div>
 
-        // Edit modal file handling
-        editUploadArea.addEventListener('click', () => editFileInput.click());
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Symbol File</h3>
+          <button class="modal-close" id="editCloseBtn">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <label for="editSymbolName">Symbol Name</label>
+            <input id="editSymbolName" type="text" />
+          </div>
+          <div class="input-group" style="margin-top:12px">
+            <label>Current File</label>
+            <div class="symbol-info" id="editCurrentFile"></div>
+          </div>
 
-        editFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                editingNewFile = e.target.files[0];
-                editUploadArea.querySelector('.upload-text').textContent = `Selected: ${editingNewFile.name}`;
-            }
-        });
+          <div class="input-group" style="margin-top:12px">
+            <label for="editFileInput">Replace File (optional — .json only)</label>
+            <div class="upload-area" id="editUploadArea" style="padding:12px;cursor:pointer">
+              <div class="upload-text" style="font-size:0.95rem">Click to select new file</div>
+              <input id="editFileInput" type="file" accept=".json" style="display:none" />
+            </div>
+          </div>
+        </div>
 
-        function loadSymbols() {
-            loadSymbolsFromStorage();
-        }
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="editCancelBtn">Cancel</button>
+          <button class="btn btn-primary" id="editSaveBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        uploadArea.addEventListener('click', () => fileInput.click());
+<script>
+/* ====== CONFIG: paste your Supabase values here ======
+   Get them from Project Settings -> API in Supabase dashboard */
+const SUPABASE_URL = "https://soymukwehosfwavafrxd.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNveW11a3dlaG9zZndhdmFmcnhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQzMjU4NTksImV4cCI6MjA3OTkwMTg1OX0.vRpR3LVCKVHaxo-ORPE93QJP_-P3aYh9zCu3STa5qdc";
+/* ===================================================== */
 
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+/* Admin password (kept as requested) */
+const ADMIN_PASSWORD = "SenoCoolioSeno";
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+/* Initialize Supabase client */
+const supabase = supabaseJs.createClient
+  ? supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) // older loader name
+  : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFileSelect(files[0]);
-            }
-        });
+/* App state */
+let isAdmin = false;
+let selectedFile = null;
+let editingSymbolId = null;
+let editingNewFile = null;
+let symbols = {}; // cached metadata keyed by id
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
-            }
-        });
+/* DOM */
+const adminSection = document.getElementById("adminSection");
+const uploadSection = document.getElementById("uploadSection");
+const passwordInput = document.getElementById("passwordInput");
+const unlockBtn = document.getElementById("unlockBtn");
+const errorMessage = document.getElementById("errorMessage");
 
-        function handleFileSelect(file) {
-            selectedFile = file;
-            uploadArea.querySelector('.upload-text').textContent = `Selected: ${file.name}`;
-            uploadArea.querySelector('.upload-subtext').textContent = `Size: ${formatFileSize(file.size)}`;
-            checkUploadReady();
-        }
+const uploadArea = document.getElementById("uploadArea");
+const fileInput = document.getElementById("fileInput");
+const symbolName = document.getElementById("symbolName");
+const uploadBtn = document.getElementById("uploadBtn");
 
-        symbolName.addEventListener('input', checkUploadReady);
+const symbolsGrid = document.getElementById("symbolsGrid");
 
-        function checkUploadReady() {
-            uploadBtn.disabled = !(selectedFile && symbolName.value.trim());
-        }
+const editModal = document.getElementById("editModal");
+const editCloseBtn = document.getElementById("editCloseBtn");
+const editCancelBtn = document.getElementById("editCancelBtn");
+const editSaveBtn = document.getElementById("editSaveBtn");
+const editSymbolName = document.getElementById("editSymbolName");
+const editCurrentFile = document.getElementById("editCurrentFile");
+const editFileInput = document.getElementById("editFileInput");
+const editUploadArea = document.getElementById("editUploadArea");
 
-        uploadBtn.addEventListener('click', async () => {
-            if (!selectedFile || !symbolName.value.trim()) return;
+/* ======= Admin unlock ======= */
+unlockBtn.addEventListener("click", () => {
+  const pwd = passwordInput.value || "";
+  if (pwd === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminSection.style.display = "none";
+    uploadSection.classList.add("active");
+    document.body.classList.add("admin-mode");
+    errorMessage.innerHTML = "";
+  } else {
+    errorMessage.innerHTML = '<div class="error-message">❌ Incorrect password</div>';
+    passwordInput.value = "";
+  }
+});
 
-            // Check file size (5MB limit per file due to storage constraints)
-            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-            if (selectedFile.size > MAX_FILE_SIZE) {
-                alert(`File is too large (${formatFileSize(selectedFile.size)}). Maximum size is 5MB. Please upload a smaller file.`);
-                return;
-            }
+passwordInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") unlockBtn.click();
+});
 
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Uploading...';
+/* ======= File select UI ======= */
+uploadArea.addEventListener("click", () => fileInput.click());
+uploadArea.addEventListener("dragover", (e) => { e.preventDefault(); uploadArea.classList.add("dragover"); });
+uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("dragover"));
+uploadArea.addEventListener("drop", (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove("dragover");
+  if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+  handleFileSelect(e.dataTransfer.files[0]);
+});
 
-            const name = symbolName.value.trim();
-            const reader = new FileReader();
+fileInput.addEventListener("change", (e) => {
+  if (e.target.files.length) handleFileSelect(e.target.files[0]);
+});
 
-            reader.onload = async (e) => {
-                const id = Date.now().toString();
-                const symbolData = {
-                    name: name,
-                    fileName: selectedFile.name,
-                    size: selectedFile.size,
-                    date: new Date().toISOString(),
-                    data: e.target.result
-                };
+function handleFileSelect(file) {
+  // accept only json by extension and type
+  if (!file.name.toLowerCase().endsWith(".json") && file.type !== "application/json") {
+    alert("Only .json files are allowed.");
+    fileInput.value = "";
+    return;
+  }
+  selectedFile = file;
+  uploadArea.querySelector(".upload-text").textContent = `Selected: ${file.name}`;
+  uploadArea.querySelector(".upload-subtext").textContent = `Size: ${formatFileSize(file.size)}`;
+  checkUploadReady();
+}
 
-                try {
-                    // Save to persistent storage (shared with all users)
-                    const saved = await saveSymbolToStorage(id, symbolData);
-                    
-                    if (saved) {
-                        symbols[id] = symbolData;
-                        renderSymbols();
+symbolName.addEventListener("input", checkUploadReady);
+function checkUploadReady() {
+  uploadBtn.disabled = !(selectedFile && symbolName.value.trim());
+}
 
-                        selectedFile = null;
-                        symbolName.value = '';
-                        fileInput.value = '';
-                        uploadArea.querySelector('.upload-text').textContent = 'Drop your IL2CPP symbol file here';
-                        uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
-                        uploadBtn.textContent = 'Upload Symbol File';
-                        
-                        alert('Symbol file uploaded successfully!');
-                    } else {
-                        throw new Error('Storage operation failed');
-                    }
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    alert('Error uploading symbol file. The file might be too large or there may be a storage issue. Please try again with a smaller file.');
-                    uploadBtn.textContent = 'Upload Symbol File';
-                    uploadBtn.disabled = false;
-                }
-            };
+/* ======= Upload flow (admin only) ======= */
+uploadBtn.addEventListener("click", async () => {
+  if (!isAdmin) return alert("You must be an admin to upload.");
+  if (!selectedFile || !symbolName.value.trim()) return;
 
-            reader.onerror = () => {
-                alert('Error reading file. Please try again.');
-                uploadBtn.textContent = 'Upload Symbol File';
-                uploadBtn.disabled = false;
-            };
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = "Uploading…";
 
-            reader.readAsDataURL(selectedFile);
-        });
+  try {
+    // create a unique path to avoid collisions
+    const path = `${Date.now()}_${sanitizeFileName(selectedFile.name)}`;
 
-        function renderSymbols() {
-            const symbolIds = Object.keys(symbols);
-            
-            if (symbolIds.length === 0) {
-                symbolsGrid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📦</div>
-                        <div class="empty-state-text">No symbol files available</div>
-                    </div>
-                `;
-                return;
-            }
+    // upload to Supabase storage
+    const { data: upData, error: upError } = await supabase.storage
+      .from("symbols")
+      .upload(path, selectedFile, { cacheControl: "3600", contentType: "application/json", upsert: false });
 
-            symbolsGrid.innerHTML = symbolIds.map(id => {
-                const symbol = symbols[id];
-                const date = new Date(symbol.date);
-                return `
-                    <div class="symbol-card">
-                        <div class="symbol-header">
-                            <div class="symbol-name">${symbol.name}</div>
-                        </div>
-                        <div class="symbol-info">${symbol.fileName}</div>
-                        <div class="symbol-size">${formatFileSize(symbol.size)}</div>
-                        <div class="symbol-date">Uploaded: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
-                        <div class="symbol-actions">
-                            <button class="btn-small btn-download" onclick="downloadSymbol('${id}')">Download</button>
-                            <button class="btn-small btn-edit" onclick="editSymbol('${id}')">Edit</button>
-                            <button class="btn-small btn-delete" onclick="deleteSymbol('${id}')">Delete</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+    if (upError) throw upError;
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-        }
+    // insert metadata into table
+    const { data: insertData, error: insertError } = await supabase
+      .from("symbols")
+      .insert([{
+        name: symbolName.value.trim(),
+        filename: selectedFile.name,
+        size: selectedFile.size,
+        storage_path: path
+      }])
+      .select()
+      .single();
 
-        window.downloadSymbol = (id) => {
-            const symbol = symbols[id];
-            const link = document.createElement('a');
-            link.href = symbol.data;
-            link.download = symbol.fileName;
-            link.click();
-        };
+    if (insertError) {
+      // try to cleanup uploaded file if DB insert failed
+      await supabase.storage.from("symbols").remove([path]).catch(()=>{});
+      throw insertError;
+    }
 
-        window.deleteSymbol = async (id) => {
-            if (!isAdmin) return;
-            if (confirm('Are you sure you want to delete this symbol file?')) {
-                const deleted = await deleteSymbolFromStorage(id);
-                if (deleted) {
-                    delete symbols[id];
-                    renderSymbols();
-                } else {
-                    alert('Error deleting symbol file. Please try again.');
-                }
-            }
-        };
+    // refresh list
+    await loadSymbols();
 
-        window.editSymbol = (id) => {
-            if (!isAdmin) return;
-            const symbol = symbols[id];
-            editingSymbolId = id;
-            editingNewFile = null;
-            
-            editSymbolName.value = symbol.name;
-            editCurrentFile.textContent = `${symbol.fileName} (${formatFileSize(symbol.size)})`;
-            editUploadArea.querySelector('.upload-text').textContent = 'Click to select new file';
-            editFileInput.value = '';
-            
-            editModal.classList.add('active');
-        };
+    // reset UI
+    selectedFile = null;
+    symbolName.value = "";
+    fileInput.value = "";
+    uploadArea.querySelector('.upload-text').textContent = 'Drop your JSON symbol file here';
+    uploadArea.querySelector('.upload-subtext').textContent = 'or click to browse';
+    alert("Upload successful — available to everyone.");
+  } catch (err) {
+    console.error(err);
+    alert("Upload failed: " + (err.message || JSON.stringify(err)));
+  } finally {
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = "Upload Symbol File (JSON)";
+  }
+});
 
-        window.closeEditModal = () => {
-            editModal.classList.remove('active');
-            editingSymbolId = null;
-            editingNewFile = null;
-        };
+/* ======= Load symbols from database ======= */
+async function loadSymbols() {
+  symbolsGrid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⏳</div><div class="empty-state-text">Loading…</div></div>`;
 
-        window.saveEdit = async () => {
-            if (!editingSymbolId) return;
-            
-            const symbol = symbols[editingSymbolId];
-            const newName = editSymbolName.value.trim();
-            
-            if (!newName) {
-                alert('Please enter a symbol name');
-                return;
-            }
+  const { data, error } = await supabase
+    .from("symbols")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-            if (editingNewFile) {
-                // Check file size
-                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-                if (editingNewFile.size > MAX_FILE_SIZE) {
-                    alert(`File is too large (${formatFileSize(editingNewFile.size)}). Maximum size is 5MB.`);
-                    return;
-                }
+  if (error) {
+    console.error("DB read error", error);
+    symbolsGrid.innerHTML = `<div class="empty-state">Error loading symbols — check console</div>`;
+    return;
+  }
 
-                // If new file is selected, read it
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const updatedSymbol = {
-                        ...symbol,
-                        name: newName,
-                        fileName: editingNewFile.name,
-                        size: editingNewFile.size,
-                        data: e.target.result,
-                        date: new Date().toISOString()
-                    };
+  if (!data || data.length === 0) {
+    symbolsGrid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No symbol files available</div></div>`;
+    symbols = {};
+    return;
+  }
 
-                    try {
-                        const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
-                        if (saved) {
-                            symbols[editingSymbolId] = updatedSymbol;
-                            renderSymbols();
-                            closeEditModal();
-                        } else {
-                            throw new Error('Storage failed');
-                        }
-                    } catch (error) {
-                        alert('Error updating symbol file. The file might be too large. Please try again.');
-                    }
-                };
-                reader.readAsDataURL(editingNewFile);
-            } else {
-                // Just update the name
-                const updatedSymbol = {
-                    ...symbol,
-                    name: newName
-                };
+  // build the grid
+  symbols = {};
+  const nodes = await Promise.all(data.map(async (row) => {
+    symbols[row.id] = row;
+    let publicUrl = "";
+    try {
+      // get public URL for storage path
+      const { data: urlData } = supabase.storage.from("symbols").getPublicUrl(row.storage_path);
+      publicUrl = (urlData && (urlData.publicUrl || urlData.public_url)) || "";
+    } catch (e) {
+      publicUrl = "";
+    }
 
-                try {
-                    const saved = await saveSymbolToStorage(editingSymbolId, updatedSymbol);
-                    if (saved) {
-                        symbols[editingSymbolId] = updatedSymbol;
-                        renderSymbols();
-                        closeEditModal();
-                    } else {
-                        throw new Error('Storage failed');
-                    }
-                } catch (error) {
-                    alert('Error updating symbol file. Please try again.');
-                }
-            }
-        };
+    return renderSymbolCard(row, publicUrl);
+  }));
 
-        // Close modal when clicking outside
-        editModal.addEventListener('click', (e) => {
-            if (e.target === editModal) {
-                closeEditModal();
-            }
-        });
+  symbolsGrid.innerHTML = nodes.join("");
+}
 
-        loadSymbols();
-    </script>
+/* ======= Render one card (returns HTML string) ======= */
+function renderSymbolCard(row, publicUrl) {
+  // store link in the row for easy download
+  const downloadOnClick = `downloadSymbol('${row.id}')`;
+  const editOnClick = `openEditModal('${row.id}')`;
+  const deleteOnClick = `deleteSymbol('${row.id}')`;
+
+  return `
+    <div class="symbol-card" id="symbol-${row.id}">
+      <div class="symbol-header">
+        <div class="symbol-name">${escapeHtml(row.name)}</div>
+        <div style="font-size:.85rem;color:${'var(--text-muted)'}">${new Date(row.created_at).toLocaleString()}</div>
+      </div>
+
+      <div class="symbol-info">${escapeHtml(row.filename)}</div>
+      <div class="symbol-size">${formatFileSize(row.size)}</div>
+
+      <div class="symbol-actions">
+        <button class="btn-small btn-download" onclick="${downloadOnClick}">Download</button>
+        <button class="btn-small btn-edit" onclick="${editOnClick}">Edit</button>
+        <button class="btn-small btn-delete" onclick="${deleteOnClick}">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ======= Download: fetch public URL from storage and open ======= */
+async function downloadSymbol(id) {
+  const row = symbols[id];
+  if (!row) return alert("Symbol not found.");
+
+  // get public url (should be public by default)
+  const { data: urlData, error: urlError } = supabase.storage.from("symbols").getPublicUrl(row.storage_path);
+  if (urlError || !urlData) {
+    console.error("getPublicUrl error", urlError);
+    return alert("Unable to get file URL.");
+  }
+
+  const url = urlData.publicUrl || urlData.public_url || "";
+  if (!url) return alert("File URL unavailable.");
+
+  // trigger download by navigating to the URL
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = row.filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* ======= Delete (admin only) ======= */
+async function deleteSymbol(id) {
+  if (!isAdmin) return alert("You must be an admin to delete.");
+  if (!confirm("Are you sure you want to permanently delete this symbol?")) return;
+
+  try {
+    const row = symbols[id];
+    if (!row) return alert("Symbol not found.");
+
+    // remove from storage
+    await supabase.storage.from("symbols").remove([row.storage_path]);
+
+    // remove from DB
+    await supabase.from("symbols").delete().eq("id", id);
+
+    // UI
+    delete symbols[id];
+    document.getElementById(`symbol-${id}`)?.remove();
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed: " + (err.message || JSON.stringify(err)));
+  }
+}
+
+/* ======= Edit modal ======= */
+function openEditModal(id) {
+  if (!isAdmin) return alert("You must be an admin to edit.");
+  editingSymbolId = id;
+  const row = symbols[id];
+  if (!row) return alert("Symbol not found.");
+
+  editSymbolName.value = row.name || "";
+  editCurrentFile.textContent = `${row.filename} (${formatFileSize(row.size)})`;
+  editingNewFile = null;
+  editFileInput.value = "";
+  editUploadArea.querySelector(".upload-text").textContent = "Click to select new file";
+  editModal.classList.add("active");
+}
+
+editCloseBtn.addEventListener("click", closeEditModal);
+editCancelBtn.addEventListener("click", closeEditModal);
+function closeEditModal() {
+  editModal.classList.remove("active");
+  editingSymbolId = null;
+  editingNewFile = null;
+}
+
+/* handle replace file selection */
+editUploadArea.addEventListener("click", () => editFileInput.click());
+editFileInput.addEventListener("change", (e) => {
+  if (!e.target.files || e.target.files.length === 0) return;
+  const f = e.target.files[0];
+  if (!f.name.toLowerCase().endsWith(".json") && f.type !== "application/json") {
+    alert("Only .json files are allowed.");
+    editFileInput.value = "";
+    return;
+  }
+  editingNewFile = f;
+  editUploadArea.querySelector(".upload-text").textContent = `Selected: ${f.name}`;
+});
+
+/* save edit */
+editSaveBtn.addEventListener("click", async () => {
+  if (!isAdmin) return alert("You must be an admin to edit.");
+  if (!editingSymbolId) return;
+
+  const newName = editSymbolName.value.trim();
+  if (!newName) return alert("Please enter a name.");
+
+  try {
+    const row = symbols[editingSymbolId];
+    if (!row) throw new Error("Row missing.");
+
+    // If replacing file
+    let newStoragePath = row.storage_path;
+    let newFilename = row.filename;
+    let newSize = row.size;
+
+    if (editingNewFile) {
+      const newPath = `${Date.now()}_${sanitizeFileName(editingNewFile.name)}`;
+      const { error: upError } = await supabase.storage.from("symbols").upload(newPath, editingNewFile, { contentType: "application/json" });
+      if (upError) throw upError;
+
+      // delete old storage file
+      await supabase.storage.from("symbols").remove([row.storage_path]).catch(()=>{});
+
+      newStoragePath = newPath;
+      newFilename = editingNewFile.name;
+      newSize = editingNewFile.size;
+    }
+
+    // update DB row
+    const { error: updError } = await supabase.from("symbols")
+      .update({ name: newName, filename: newFilename, size: newSize, storage_path: newStoragePath })
+      .eq("id", editingSymbolId);
+
+    if (updError) throw updError;
+
+    await loadSymbols();
+    closeEditModal();
+    alert("Updated successfully.");
+  } catch (err) {
+    console.error(err);
+    alert("Update failed: " + (err.message || JSON.stringify(err)));
+  }
+});
+
+/* ======= Utilities ======= */
+function sanitizeFileName(name) {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+function formatFileSize(bytes) {
+  if (!bytes || bytes <= 0) return "0 Bytes";
+  if (bytes < 1024) return `${bytes} Bytes`;
+  if (bytes < 1048576) return `${(bytes/1024).toFixed(2)} KB`;
+  return `${(bytes/1048576).toFixed(2)} MB`;
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" }[c])); }
+
+/* ======= initial load ======= */
+loadSymbols();
+
+/* ======= Helpful note: disable admin controls for non-admins by hiding upload section buttons in UI if not admin (already handled) ======= */
+</script>
 </body>
 </html>
-
