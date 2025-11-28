@@ -250,18 +250,16 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   const refreshBtn = $('refreshBtn');
   const symbolsGrid = $('symbolsGrid');
 
-  // admin unlock handler (fixed - works)
+  // admin unlock handler (fixed)
   unlockBtn.addEventListener('click', ()=>{
     const v = passwordInput.value || '';
     if(v === ADMIN_PASSWORD){
-      isAdmin = true; document.querySelector('.upload-section')?.classList?.add('active');
-      // visually show admin area - we'll show status
+      isAdmin = true;
       showStatus('Admin');
-      $('adminSection')?.style?.display = 'none';
       alert('Admin unlocked. You can now upload / edit / delete.');
     } else {
       showStatus('Locked');
-      $('errorMessage')?.innerHTML = '<div class="error-message">❌ Incorrect password</div>';
+      alert('Incorrect password');
     }
   });
 
