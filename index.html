@@ -238,7 +238,8 @@ function formatSize(b){ if(!b) return '0 Bytes'; if(b<1024) return b+' B'; if(b<
 // wait for DOM
 window.addEventListener('DOMContentLoaded', async ()=>{
   // create supabase client
-  try { supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){ console.error('supabase init err', e) }
+  try { const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+ } catch(e){ console.error('supabase init err', e) }
 
   // wire up elements
   const unlockBtn = $('unlockBtn');
